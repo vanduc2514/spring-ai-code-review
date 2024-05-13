@@ -35,5 +35,6 @@
                 "eamodio.gitlens"
             ]
         }
-    }
+    },
+    "forwardPorts": [ 8080 ]
 }
