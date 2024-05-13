@@ -1,0 +1,39 @@
+// For configuration, see
+{
+    "name": "spring-ai-code-review-devcontainers",
+    "image": "mcr.microsoft.com/devcontainers/base:bullseye",
+    "features": {
+        "ghcr.io/devcontainers/features/java:1": {
+            "version": "17.0.11",
+            "jdkDistro": "tem",
+            "installMaven": "true",
+            "mavenVersion": "3.8.8"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "editor.formatOnType": true,
+                "editor.linkedEditing": true,
+                "editor.tabCompletion": "on",
+                "editor.tabSize": 4,
+                "editor.insertSpaces": true,
+                "editor.detectIndentation": false,
+                "editor.renderWhitespace": "boundary",
+                "editor.semanticHighlighting.enabled": true,
+                "files.autoSave": "onFocusChange",
+                "files.trimFinalNewlines": false,
+                "files.trimTrailingWhitespace": true,
+                "explorer.confirmDelete": true,
+                "java.jdt.ls.java.home": "/usr/local/sdkman/candidates/java/current",
+                "java.configuration.updateBuildConfiguration": "interactive"
+            },
+            "extensions": [
+                "vscjava.vscode-java-pack",
+                "hediet.vscode-drawio",
+                "vmware.vscode-boot-dev-pack",
+                "eamodio.gitlens"
+            ]
+        }
+    }
+}

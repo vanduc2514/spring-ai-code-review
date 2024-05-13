@@ -1,0 +1,134 @@
+<svg host="65bd71144e" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="852" height="402" viewBox="-0.5 -0.5 852 402" content="&lt;mxfile&gt;&lt;diagram id=&quot;0fpcaaiVGmnKWMQEwNZ3&quot; name=&quot;Page-1&quot;&gt;zZdNc9owEIZ/Dcd0bAwGjoR8NIfOZMKhzVG1N7YmsuTKAkN/fVf2GqPYpKTQJBcjvZK12mfXKzEIFtnmVrM8/aZiEIOhF28GwdVgOJzOhvi0wrYWRrNJLSSax7Xkt8KS/wYSPVJXPIbCmWiUEobnrhgpKSEyjsa0VqU77UkJ12rOEugIy4iJrvqdxyYl1fe8duAr8CQl09MxDfxk0XOi1UqSPakk1CMZa5ahqUXKYlXu2QuuB8FCK2XqVrZZgLBUG2L1ezcHRndb1iDNUS9QjNZMrMht2pjZNhwqT8C+4A2CyzLlBpY5i+xoiYFHLTWZwJ6PTVoOtIHNwT21nmLugMrA6C1O2bjxp7QJqVu2MZiOSEv38AczEhnFPdmt3ALABjHo5xF0cCwwrVF5gDWHEhvLXHOZYGN+Zx95LnjEDFfyNG5M8ERiO0JIoFGwCHFlMacBo/Id3g7LHuKH8U5cvn447gAeTXoA7wJzCuBuvi0Et86cIetOwjJyqQzH3bSb9UAJz8Bk1PMNhgINXMZ87VAJf61sZbh0Wgn9Vm8UOZO9r7RF6SJSQmGKze0WJDecid4lb0GCZsZm/71WWW4aG+hPbcY1jXK1X1c95AKGxVxQ1tudCHh63bOf+p0NnhHlo1pVh5Jlyeya6smUdRdkwiWA/li4Z/R1q1baHtWseLYzi+rYxoduKqhJrd8JX4OsTu+qvhaS5zmY6vQsrKCqQY2fvebsjXBOKSX/re6+PNd2d4C9CuNPe0qMPzxDjRl3qECMtx3qVjeU4ypqgeGNwCnmhukEjFPL7OKvQtEg8NRcu1etUxycvtFB9Etvf+x3Hm2CfBk33asNJUzd21KvQG/N3F4v7WktWFHwqJFvuGiXj5tJZBsVGveO5Tv5RHx9/18BeycApmX36Xou3TYELeCjE7gHcPOVvj/hSecacAsZVtrmrtk9CBcpsxXzs9ygwr9foXa17Nx3qCZsh+i9RPcAhUU3v7/7cG7h7P24Ybf9c1mN7f13D67/AA==&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs>
+        <filter id="dropShadow">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="1.7" result="blur"/>
+            <feOffset in="blur" dx="3" dy="3" result="offsetBlur"/>
+            <feFlood flood-color="#3D4574" flood-opacity="0.4" result="offsetColor"/>
+            <feComposite in="offsetColor" in2="offsetBlur" operator="in" result="offsetBlur"/>
+            <feBlend in="SourceGraphic" in2="offsetBlur"/>
+        </filter>
+    </defs>
+    <g filter="url(#dropShadow)">
+        <rect x="0" y="0" width="840" height="390" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <rect x="160" y="105" width="470" height="210" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility" style="overflow: visible; text-align: left;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe flex-start; justify-content: unsafe center; width: 468px; height: 1px; padding-top: 112px; margin-left: 161px;">
+                        <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: all; white-space: normal; overflow-wrap: normal;">
+                                Code Review Spring AI Application
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="395" y="124" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    Code Review Spring AI Application
+                </text>
+            </switch>
+        </g>
+        <rect x="30" y="190" width="90" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility" style="overflow: visible; text-align: left;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 88px; height: 1px; padding-top: 220px; margin-left: 31px;">
+                        <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: all; white-space: normal; overflow-wrap: normal;">
+                                Client
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="75" y="224" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    Client
+                </text>
+            </switch>
+        </g>
+        <rect x="200" y="160" width="180" height="120" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility" style="overflow: visible; text-align: left;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe flex-start; justify-content: unsafe center; width: 178px; height: 1px; padding-top: 167px; margin-left: 201px;">
+                        <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: all; white-space: normal; overflow-wrap: normal;">
+                                <div style="">
+                                    <span style="background-color: initial;">
+                                        Generate Prompt
+                                    </span>
+                                </div>
+                                <div style="text-align: left;">
+                                    <br/>
+                                </div>
+                                <div style="text-align: left;">
+                                    <span style="background-color: initial;">
+                                        You are a software engineer
+                                    </span>
+                                </div>
+                                <div style="text-align: left;">
+                                    <span style="background-color: initial;">
+                                        your task is to review the given code snippet base on criteria
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="290" y="179" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    Generate Prompt...
+                </text>
+            </switch>
+        </g>
+        <path d="M 120 220 L 193.63 220" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 198.88 220 L 191.88 223.5 L 193.63 220 L 191.88 216.5 Z" fill="rgb(0, 0, 0)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 443.63 220 L 380 220" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 448.88 220 L 441.88 223.5 L 443.63 220 L 441.88 216.5 Z" fill="rgb(0, 0, 0)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 570 220 L 673.63 220" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 678.88 220 L 671.88 223.5 L 673.63 220 L 671.88 216.5 Z" fill="rgb(0, 0, 0)" stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="450" y="190" width="120" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility" style="overflow: visible; text-align: left;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 220px; margin-left: 451px;">
+                        <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: all; white-space: normal; overflow-wrap: normal;">
+                                Gemini AI
+                                <br/>
+                                Chat Client
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="510" y="224" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    Gemini AI...
+                </text>
+            </switch>
+        </g>
+        <rect x="680" y="190" width="120" height="60" fill="rgb(255, 255, 255)" stroke="rgb(0, 0, 0)" pointer-events="all"/>
+        <g transform="translate(-0.5 -0.5)">
+            <switch>
+                <foreignObject pointer-events="none" width="100%" height="100%" requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility" style="overflow: visible; text-align: left;">
+                    <div xmlns="http://www.w3.org/1999/xhtml" style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 118px; height: 1px; padding-top: 220px; margin-left: 681px;">
+                        <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                            <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: all; white-space: normal; overflow-wrap: normal;">
+                                Gemini AI
+                                <br/>
+                                Rest API
+                            </div>
+                        </div>
+                    </div>
+                </foreignObject>
+                <text x="740" y="224" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle">
+                    Gemini AI...
+                </text>
+            </switch>
+        </g>
+    </g>
+    <switch>
+        <g requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"/>
+        <a transform="translate(0,-5)" xlink:href="https://www.diagrams.net/doc/faq/svg-export-text-problems" target="_blank">
+            <text text-anchor="middle" font-size="10px" x="50%" y="100%">
+                Text is not SVG - cannot display
+            </text>
+        </a>
+    </switch>
+</svg>
