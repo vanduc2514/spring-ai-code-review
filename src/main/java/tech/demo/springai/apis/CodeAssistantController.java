@@ -2,7 +2,6 @@ package tech.demo.springai.apis;
 
 import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,7 +10,6 @@ public class CodeAssistantController {
 
     private ChatClient chatClient;
 
-    @Autowired
     public CodeAssistantController(ChatClient chatClient) {
         this.chatClient = chatClient;
     }
@@ -19,7 +17,7 @@ public class CodeAssistantController {
     @GetMapping("/code/review")
     public String codeReview(String codeSnippet) {
         // TODO: use template for prompting
-        Prompt codeReviewPrompt = new Prompt(codeSnippet);
+        Prompt codeReviewPrompt = new Prompt("Tell me a random software engineer joke");
         return chatClient.call(codeReviewPrompt).getResult().getOutput().getContent();
     }
 }
