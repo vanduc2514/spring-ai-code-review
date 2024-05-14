@@ -1,14 +1,13 @@
 package tech.demo.springai;
 
 import org.springframework.ai.autoconfigure.vertexai.gemini.VertexAiGeminiAutoConfiguration;
-import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import tech.demo.springai.components.BetaGeminiAI;
+import tech.demo.springai.components.VertexAIAdapter;
 
 @SpringBootApplication(
     exclude = VertexAiGeminiAutoConfiguration.class
@@ -26,13 +25,13 @@ public class App {
     }
 
     @Bean
-    ChatClient chatClient(BetaGeminiAI betaGeminiAI) {
-        return new VertexAiGeminiChatClient(betaGeminiAI);
+    VertexAiGeminiChatClient chatClient(VertexAIAdapter vertexAIAdapter) {
+        return new VertexAiGeminiChatClient(vertexAIAdapter);
     }
 
     @Bean
-    BetaGeminiAI betaGeminiAI() {
-        return BetaGeminiAI.create(geminiBaseUrl, geminiApiKey);
+    VertexAIAdapter vertexAIAdapter() {
+        return VertexAIAdapter.create(geminiBaseUrl, geminiApiKey);
     }
 
 }

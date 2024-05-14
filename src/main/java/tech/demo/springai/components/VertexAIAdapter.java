@@ -10,15 +10,15 @@ import com.google.cloud.vertexai.api.PredictionServiceSettings;
 
 // Should switch to Spring implementation when this issue is implemented
 // https://github.com/spring-projects/spring-ai/issues/626
-public class BetaGeminiAI extends VertexAI {
+public class VertexAIAdapter extends VertexAI {
 
     private String geminiApiKey;
 
     private VertexAI delegate;
 
-    private BetaPredictionServiceClient betaPredictionServiceClient;
+    private PredictionServiceClient betaPredictionServiceClient;
 
-    public static BetaGeminiAI create(String geminiEndpoint, String geminiApiKey) {
+    public static VertexAIAdapter create(String geminiEndpoint, String geminiApiKey) {
         var dummyVertexAI = new VertexAI.Builder()
                 .setProjectId("dummy-project-id")
                 .setLocation("dummy-location")
@@ -26,10 +26,10 @@ public class BetaGeminiAI extends VertexAI {
                 .setTransport(Transport.REST)
                 .setCredentials(new NoOpGoogleCredentials())
                 .build();
-        return new BetaGeminiAI(dummyVertexAI, geminiApiKey);
+        return new VertexAIAdapter(dummyVertexAI, geminiApiKey);
     }
 
-    private BetaGeminiAI(VertexAI delegate, String geminiApiKey) {
+    private VertexAIAdapter(VertexAI delegate, String geminiApiKey) {
         super(delegate.getProjectId(), delegate.getLocation());
         this.delegate = delegate;
         this.geminiApiKey = geminiApiKey;
@@ -40,12 +40,12 @@ public class BetaGeminiAI extends VertexAI {
         if (betaPredictionServiceClient == null) {
             var delegateClient = delegate.getPredictionServiceClient();
             var delegateServiceSettings = delegateClient.getSettings();
-            var betaPredictionService = new BetaPredictionService(
+            var betaPredictionService = new PredictionServiceAdapter(
                     delegateClient.getStub(),
-                    ((PredictionServiceSettings) delegateServiceSettings).generateContentSettings(),
+                    (PredictionServiceSettings) delegateServiceSettings,
                     ClientContext.create(delegateServiceSettings),
                     geminiApiKey);
-            betaPredictionServiceClient = new BetaPredictionServiceClient(betaPredictionService);
+            betaPredictionServiceClient = new PredictionServiceClient(betaPredictionService) {};
         }
         return betaPredictionServiceClient;
     }
