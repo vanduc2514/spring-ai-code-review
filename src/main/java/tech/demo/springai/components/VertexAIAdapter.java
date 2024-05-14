@@ -2,7 +2,6 @@ package tech.demo.springai.components;
 
 import java.io.IOException;
 
-import com.google.api.gax.rpc.ClientContext;
 import com.google.cloud.vertexai.Transport;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.PredictionServiceClient;
@@ -16,7 +15,7 @@ public class VertexAIAdapter extends VertexAI {
 
     private VertexAI delegate;
 
-    private PredictionServiceClient betaPredictionServiceClient;
+    private PredictionServiceClient predictionServiceClient;
 
     public static VertexAIAdapter create(String geminiEndpoint, String geminiApiKey) {
         var dummyVertexAI = new VertexAI.Builder()
@@ -37,17 +36,12 @@ public class VertexAIAdapter extends VertexAI {
 
     @Override
     public PredictionServiceClient getPredictionServiceClient() throws IOException {
-        if (betaPredictionServiceClient == null) {
-            var delegateClient = delegate.getPredictionServiceClient();
-            var delegateServiceSettings = delegateClient.getSettings();
-            var betaPredictionService = new PredictionServiceAdapter(
-                    delegateClient.getStub(),
-                    (PredictionServiceSettings) delegateServiceSettings,
-                    ClientContext.create(delegateServiceSettings),
-                    geminiApiKey);
-            betaPredictionServiceClient = new PredictionServiceClient(betaPredictionService) {};
+        if (predictionServiceClient == null) {
+            var settings = delegate.getPredictionServiceClient().getSettings();
+            var predictionServiceAdapter = new PredictionServiceAdapter((PredictionServiceSettings) settings, geminiApiKey);
+            predictionServiceClient = new PredictionServiceClient(predictionServiceAdapter) {};
         }
-        return betaPredictionServiceClient;
+        return predictionServiceClient;
     }
 
 }

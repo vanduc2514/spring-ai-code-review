@@ -1,9 +1,12 @@
 package tech.demo.springai.components;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import com.google.api.gax.core.BackgroundResource;
+import com.google.api.gax.core.BackgroundResourceAggregation;
 import com.google.api.gax.httpjson.ApiMethodDescriptor;
 import com.google.api.gax.httpjson.HttpJsonCallSettings;
 import com.google.api.gax.httpjson.HttpJsonCallableFactory;
@@ -23,26 +26,24 @@ public class PredictionServiceAdapter extends PredictionServiceStub {
 
     private static final String DEFAULT_MODEL = "gemini-pro";
 
-    private PredictionServiceStub delegate;
-
     private PredictionServiceSettings predictionServiceSettings;
 
     private ClientContext clientContext;
+
+    private BackgroundResource backgroundResources;
 
     private String geminiApiKey;
 
     private TypeRegistry typeRegistry;
 
     public PredictionServiceAdapter(
-            PredictionServiceStub delegate,
             PredictionServiceSettings predictionServiceSettings,
-            ClientContext clientContext,
-            String geminiApiKey) {
-        this.delegate = delegate;
+            String geminiApiKey) throws IOException {
         this.predictionServiceSettings = predictionServiceSettings;
-        this.clientContext = clientContext;
         this.geminiApiKey = geminiApiKey;
         typeRegistry = TypeRegistry.newBuilder().build();
+        clientContext = ClientContext.create(predictionServiceSettings);
+        backgroundResources = new BackgroundResourceAggregation(clientContext.getBackgroundResources());
     }
 
     @Override
@@ -94,32 +95,36 @@ public class PredictionServiceAdapter extends PredictionServiceStub {
 
     @Override
     public void shutdown() {
-        delegate.shutdown();
+        backgroundResources.shutdown();
     }
 
     @Override
     public boolean isShutdown() {
-        return delegate.isShutdown();
+        return backgroundResources.isShutdown();
     }
 
     @Override
     public boolean isTerminated() {
-        return delegate.isTerminated();
+        return backgroundResources.isTerminated();
     }
 
     @Override
     public void shutdownNow() {
-        delegate.shutdownNow();
+        backgroundResources.shutdownNow();
     }
 
     @Override
     public boolean awaitTermination(long duration, TimeUnit unit) throws InterruptedException {
-        return delegate.awaitTermination(duration, unit);
+        return backgroundResources.awaitTermination(duration, unit);
     }
 
     @Override
     public void close() {
-        delegate.close();
+        try {
+            backgroundResources.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
 }
