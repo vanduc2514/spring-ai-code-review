@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-App<spring-ai-code-review>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "tech.demo.springai.App",
+            "projectName": "spring-ai-code-review",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
