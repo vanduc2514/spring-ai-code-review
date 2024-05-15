@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Streaming Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #inputText {
+            width: 100%;
+            height: 200px;
+        }
+        #output {
+            width: 100%;
+            height: 200px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            overflow-y: auto;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
+            display: none; /* Initially hidden */
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Text Streaming Example</h1>
+    <textarea id="inputText" placeholder="Enter your text here..."></textarea>
+    <button onclick="sendText()">Send</button>
+    <button onclick="stopStreaming()">Stop</button>
+    <div class="loader" id="loader"></div>
+
+    <div id="output"></div>
+
+    <script>
+        let controller; // To hold the controller for the readable stream
+        let intervalId; // To hold the ID of the interval
+
+        function sendText() {
+            const inputText = document.getElementById('inputText').value;
+            const outputElement = document.getElementById('output');
+            const loader = document.getElementById('loader');
+
+            // Clear previous output
+            outputElement.innerHTML = '';
+
+            // Hide loading animation if visible
+            loader.style.display = 'none';
+
+            // Clear previous interval if exists
+            clearInterval(intervalId);
+
+            // Create new controller
+            controller = new AbortController();
+
+            // Show loading animation
+            loader.style.display = 'block';
+
+            fetch('http://localhost:8080/debug/stream?prompt=' + inputText, {
+                method: 'GET',
+                signal: controller.signal // Pass the signal to abort the fetch
+            })
+            .then(response => {
+                const reader = response.body.getReader();
+                return new ReadableStream({
+                    start(controller) {
+                        function push() {
+                            reader.read().then(({ done, value }) => {
+                                if (done) {
+                                    controller.close();
+                                    return;
+                                }
+                                const text = new TextDecoder().decode(value);
+                                let i = 0;
+                                intervalId = setInterval(() => {
+                                    if (i < text.length) {
+                                        // Once the first character is displayed, hide the loader
+                                        loader.style.display = 'none';
+                                        outputElement.textContent += text.charAt(i);
+                                        i++;
+                                    } else {
+                                        clearInterval(intervalId);
+                                    }
+                                }, 30); // Adjust speed as necessary
+                                controller.enqueue(value);
+                                push();
+                            });
+                        }
+                        push();
+                    }
+                })
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Hide loading animation on error
+                loader.style.display = 'none';
+            });
+        }
+
+        function stopStreaming() {
+            if (controller) {
+                controller.abort(); // Abort the fetch request
+                const loader = document.getElementById('loader');
+                loader.style.display = 'none'; // Hide the loading animation
+                clearInterval(intervalId); // Clear the interval
+            }
+        }
+    </script>
+
+</body>
+</html>
