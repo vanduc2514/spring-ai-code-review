@@ -17,7 +17,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>17</java.version>
         <lombok.version>1.18.32</lombok.version>
-        <spring-ai-gemini.version>1.0.0-20240511.141506-128</spring-ai-gemini.version>
+        <spring-ai-gemini.version>1.0.0-SNAPSHOT</spring-ai-gemini.version>
     </properties>
 
     <dependencies>
