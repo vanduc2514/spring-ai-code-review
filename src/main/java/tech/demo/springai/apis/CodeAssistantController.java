@@ -1,43 +1,42 @@
 package tech.demo.springai.apis;
 
-import org.springframework.ai.chat.ChatClient;
 import org.springframework.ai.chat.ChatResponse;
-import org.springframework.ai.chat.StreamingChatClient;
-import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import reactor.core.publisher.Flux;
-import org.springframework.web.bind.annotation.RequestParam;
+import tech.demo.springai.dtos.AgentResponse;
+import tech.demo.springai.dtos.AgentType;
+import tech.demo.springai.service.LogicAssementAgent;
+import tech.demo.springai.service.QualityAssessmentAgent;
 
 
 @RestController
 public class CodeAssistantController {
 
     @Autowired
-    private ChatClient chatClient;
+    private LogicAssementAgent logicAssementAgent;
 
     @Autowired
-    private StreamingChatClient streamingChatClient;
+    private QualityAssessmentAgent qualityAssessmentAgent;
 
-    @GetMapping("/debug")
-    public ChatResponse debug(@RequestParam String prompt) {
-        return chatClient.call(new Prompt(prompt));
+    @PostMapping("/stream/code/review/stage/0")
+    public Flux<AgentResponse> streamCodeReviewStage0(@RequestBody String codeSnippet) {
+        return Flux.merge(
+                logicAssementAgent.assessCodeSnippet(codeSnippet)
+                    .map(chatResponse -> mapAgentResponse(
+                        chatResponse, AgentType.LOGIC_ASSESSMENT)),
+                qualityAssessmentAgent.assessCodeSnippet(codeSnippet)
+                    .map(chatResponse -> mapAgentResponse(
+                                chatResponse, AgentType.QUALITY_ASSESSMENT)));
     }
 
-    @GetMapping("/debug/stream")
-    public Flux<ChatResponse> debugStream(@RequestParam String prompt) {
-        return streamingChatClient.stream(new Prompt(prompt));
-    }
-
-    @GetMapping("/code/review")
-    public ChatResponse codeReview(String codeSnippet) {
-        throw new UnsupportedOperationException("Not Yet Implemneted");
-    }
-
-    @GetMapping("/code/review/stream")
-    public Flux<ChatResponse> codeReviewStreaming(String codeSnippet) {
-        throw new UnsupportedOperationException("Not Yet Implemneted");
+    private AgentResponse mapAgentResponse(ChatResponse chatResponse, AgentType agentType) {
+        return AgentResponse.builder()
+                .agentType(agentType)
+                .response(chatResponse.getResult().getOutput().getContent())
+                .build();
     }
 }
