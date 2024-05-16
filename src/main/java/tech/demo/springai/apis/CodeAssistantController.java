@@ -30,7 +30,7 @@ public class CodeAssistantController {
                         chatResponse, AgentType.LOGIC_ASSESSMENT)),
                 qualityAssessmentAgent.assessCodeSnippet(codeSnippet)
                     .map(chatResponse -> mapAgentResponse(
-                                chatResponse, AgentType.QUALITY_ASSESSMENT)));
+                        chatResponse, AgentType.QUALITY_ASSESSMENT)));
     }
 
     private AgentResponse mapAgentResponse(ChatResponse chatResponse, AgentType agentType) {
