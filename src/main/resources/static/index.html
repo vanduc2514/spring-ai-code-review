@@ -1,12 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Code Review UI</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI review code</title>
+    <link rel="stylesheet" href="index.css">
+
 </head>
 <body>
-    <p>
-        <span>It works</span>
-    </p>
+
+<h1>AI review code</h1>
+<textarea id="inputText" placeholder="Enter your code here..."></textarea>
+<button onclick="sendText()">Send</button>
+<button onclick="stopStreaming()">Stop</button>
+<div class="loader" id="loader"></div>
+
+<div id="output"></div>
+
+<script src="index.js"></script>
+
 </body>
 </html>

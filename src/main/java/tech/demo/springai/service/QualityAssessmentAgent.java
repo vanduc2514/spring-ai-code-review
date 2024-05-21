@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 @Service
-public class LogicAssementAgent implements AssessmentAgent {
+public class QualityAssessmentAgent implements AssessmentAgent {
 
-    @Value("classpath:prompts/system-logic-assesment-message.st")
+    @Value("classpath:prompts/system-quality-assessment-message.st")
     private Resource systemPromptResource;
 
     @Value("classpath:/prompts/user-code-review-message.st")

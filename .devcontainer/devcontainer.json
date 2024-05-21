@@ -32,7 +32,8 @@
                 "vscjava.vscode-java-pack",
                 "hediet.vscode-drawio",
                 "vmware.vscode-boot-dev-pack",
-                "eamodio.gitlens"
+                "eamodio.gitlens",
+                "vscjava.vscode-lombok"
             ]
         }
     },
