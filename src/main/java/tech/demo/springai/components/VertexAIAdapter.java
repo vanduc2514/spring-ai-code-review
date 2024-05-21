@@ -35,11 +35,16 @@ public class VertexAIAdapter extends VertexAI {
     }
 
     @Override
-    public PredictionServiceClient getPredictionServiceClient() throws IOException {
+    public PredictionServiceClient getPredictionServiceClient() {
         if (predictionServiceClient == null) {
             var settings = delegate.getPredictionServiceClient().getSettings();
-            var predictionServiceAdapter = new PredictionServiceAdapter((PredictionServiceSettings) settings, geminiApiKey);
-            predictionServiceClient = new PredictionServiceClient(predictionServiceAdapter) {};
+            PredictionServiceAdapter predictionServiceAdapter;
+            try {
+                predictionServiceAdapter = new PredictionServiceAdapter((PredictionServiceSettings) settings, geminiApiKey);
+                predictionServiceClient = new PredictionServiceClient(predictionServiceAdapter) {};
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
         }
         return predictionServiceClient;
     }
