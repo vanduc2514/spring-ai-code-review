@@ -31,7 +31,7 @@ public class App {
 
     @Bean
     VertexAIAdapter vertexAIAdapter() {
-        return VertexAIAdapter.create(geminiBaseUrl, geminiApiKey);
+        return new VertexAIAdapter(geminiBaseUrl, geminiApiKey);
     }
 
 }

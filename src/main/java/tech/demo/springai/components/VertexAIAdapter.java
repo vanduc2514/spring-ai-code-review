@@ -2,6 +2,8 @@ package tech.demo.springai.components;
 
 import java.io.IOException;
 
+import com.google.api.gax.core.NoCredentialsProvider;
+import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
 import com.google.cloud.vertexai.Transport;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.PredictionServiceClient;
@@ -13,38 +15,25 @@ public class VertexAIAdapter extends VertexAI {
 
     private String geminiApiKey;
 
-    private VertexAI delegate;
-
     private PredictionServiceClient predictionServiceClient;
 
-    public static VertexAIAdapter create(String geminiEndpoint, String geminiApiKey) {
-        var dummyVertexAI = new VertexAI.Builder()
-                .setProjectId("dummy-project-id")
-                .setLocation("dummy-location")
-                .setApiEndpoint(geminiEndpoint)
-                .setTransport(Transport.REST)
-                .setCredentials(new NoOpGoogleCredentials())
-                .build();
-        return new VertexAIAdapter(dummyVertexAI, geminiApiKey);
-    }
-
-    private VertexAIAdapter(VertexAI delegate, String geminiApiKey) {
-        super(delegate.getProjectId(), delegate.getLocation());
-        this.delegate = delegate;
+    public VertexAIAdapter(String geminiEndpoint, String geminiApiKey) {
+        // Avoid NPE
+        super("", "", Transport.REST, new NoOpGoogleCredentials());
         this.geminiApiKey = geminiApiKey;
+        setApiEndpoint(geminiEndpoint);
     }
 
     @Override
-    public PredictionServiceClient getPredictionServiceClient() {
+    public PredictionServiceClient getPredictionServiceClient() throws IOException {
         if (predictionServiceClient == null) {
-            var settings = delegate.getPredictionServiceClient().getSettings();
-            PredictionServiceAdapter predictionServiceAdapter;
-            try {
-                predictionServiceAdapter = new PredictionServiceAdapter((PredictionServiceSettings) settings, geminiApiKey);
-                predictionServiceClient = new PredictionServiceClient(predictionServiceAdapter) {};
-            } catch (IOException e) {
-                throw new RuntimeException(e.getMessage(), e);
-            }
+            PredictionServiceSettings settings = PredictionServiceSettings.newBuilder()
+                .setEndpoint(getApiEndpoint())
+                .setCredentialsProvider(new NoCredentialsProvider())
+                .setTransportChannelProvider(InstantiatingHttpJsonChannelProvider.newBuilder().build())
+                .build();
+            var predictionServiceAdapter = new PredictionServiceAdapter(settings, geminiApiKey);
+            predictionServiceClient = new PredictionServiceClient(predictionServiceAdapter) {};
         }
         return predictionServiceClient;
     }

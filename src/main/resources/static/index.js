@@ -41,7 +41,7 @@ const agentTypeLabel = {
 	SECURE_ASSESSMENT: 'SECURE ASSESSMENT: \n',
 	LOGIC_ASSESSMENT: 'LOGIC ASSESSMENT: \n'
 };
-const intervalTime = 30;
+const intervalTime = 20;
 
 let controller; // To hold the controller for the readable stream
 let intervalId; // To hold the ID of the interval
