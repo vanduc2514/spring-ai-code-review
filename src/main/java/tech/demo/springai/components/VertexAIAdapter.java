@@ -19,7 +19,7 @@ public class VertexAIAdapter extends VertexAI {
 
     public VertexAIAdapter(String geminiEndpoint, String geminiApiKey) {
         // Avoid NPE
-        super("", "", Transport.REST, new NoOpGoogleCredentials());
+        super("", "");
         this.geminiApiKey = geminiApiKey;
         setApiEndpoint(geminiEndpoint);
     }
