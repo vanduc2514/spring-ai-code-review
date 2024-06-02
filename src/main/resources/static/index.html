@@ -5,19 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI review code</title>
     <link rel="stylesheet" href="index.css">
-
 </head>
+<script src="index.js"></script>
 <body>
 
 <h1>AI review code</h1>
-<textarea id="inputText" placeholder="Enter your code here..."></textarea>
-<button onclick="sendText()">Send</button>
-<button onclick="stopStreaming()">Stop</button>
+<div class="container">
+    <textarea id="inputText" placeholder="Enter your code here..."></textarea>
+    <div id="textDisplay">Some text to display next to the input</div>
+</div>
+<div class="button-container">
+    <button onclick="sendText()">Send</button>
+    <button onclick="stopStreaming()">Stop</button>
+</div>
 <div class="loader" id="loader"></div>
 
 <div id="output"></div>
-
-<script src="index.js"></script>
 
 </body>
 </html>
