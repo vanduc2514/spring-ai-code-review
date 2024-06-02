@@ -29,7 +29,8 @@ body {
     border: 1px solid #ccc;
     margin-top: 20px;
     white-space: pre-wrap;
-    overflow-y: auto;
+    overflow: hidden; /* Ensures no scrollbars initially */
+    transition: height 0.2s ease; /* Smooth height transition */
 }
 .loader {
     border: 4px solid #f3f3f3;

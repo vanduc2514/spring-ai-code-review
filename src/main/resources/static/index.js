@@ -41,7 +41,7 @@ const agentTypeLabel = {
 	SECURE_ASSESSMENT: 'SECURE ASSESSMENT: \n',
 	LOGIC_ASSESSMENT: 'LOGIC ASSESSMENT: \n'
 };
-const intervalTime = 20;
+const intervalTime = 10;
 
 let controller; // To hold the controller for the readable stream
 let intervalId; // To hold the ID of the interval
@@ -118,8 +118,9 @@ function sendText() {
 					intervalId = setInterval(() => {
 						if (typeof item !== 'undefined' && i < item.length) {
 							// Once the first character is displayed, hide the loader
-							loader.style.display = 'none';
-							outputElement.textContent += item.charAt(i);
+                            loader.style.display = 'none';
+                            outputElement.textContent += item.charAt(i);
+                            output.style.height = `${output.scrollHeight}px`;
 							i++;
 						} else {
 							item = queue.dequeue();
