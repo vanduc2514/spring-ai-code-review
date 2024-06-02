@@ -3,9 +3,8 @@ package tech.demo.springai.service;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.ai.chat.ChatResponse;
-import org.springframework.ai.chat.StreamingChatClient;
-import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.model.StreamingChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
@@ -26,15 +25,13 @@ public class LogicAssementAgent implements AssessmentAgent {
     private Resource userPromptResource;
 
     @Autowired
-    private StreamingChatClient chatClient;
+    private StreamingChatModel chatClient;
 
     @Override
     public Flux<ChatResponse> assessCodeSnippet(String codeSnippet) {
-        Message systemMessage = new SystemPromptTemplate(systemPromptResource)
-            .createMessage();
-        Message userMessage = new PromptTemplate(userPromptResource)
-            .createMessage(Map.of("codeSnippet", codeSnippet));
-        Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
+        var systemMessage = new SystemPromptTemplate(systemPromptResource).createMessage();
+        var userMessage = new PromptTemplate(userPromptResource).createMessage(Map.of("codeSnippet", codeSnippet));
+        var prompt = new Prompt(List.of(systemMessage, userMessage));
         return chatClient.stream(prompt);
     }
 

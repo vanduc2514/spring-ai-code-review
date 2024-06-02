@@ -1,7 +1,7 @@
 package tech.demo.springai;
 
 import org.springframework.ai.autoconfigure.vertexai.gemini.VertexAiGeminiAutoConfiguration;
-import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatClient;
+import org.springframework.ai.vertexai.gemini.VertexAiGeminiChatModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,8 +25,8 @@ public class App {
     }
 
     @Bean
-    VertexAiGeminiChatClient chatClient(VertexAIAdapter vertexAIAdapter) {
-        return new VertexAiGeminiChatClient(vertexAIAdapter);
+    VertexAiGeminiChatModel chatClient(VertexAIAdapter vertexAIAdapter) {
+        return new VertexAiGeminiChatModel(vertexAIAdapter);
     }
 
     @Bean

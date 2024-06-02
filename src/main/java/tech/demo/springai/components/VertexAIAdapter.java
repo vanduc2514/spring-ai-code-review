@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import com.google.api.gax.core.NoCredentialsProvider;
 import com.google.api.gax.httpjson.InstantiatingHttpJsonChannelProvider;
-import com.google.cloud.vertexai.Transport;
 import com.google.cloud.vertexai.VertexAI;
 import com.google.cloud.vertexai.api.PredictionServiceClient;
 import com.google.cloud.vertexai.api.PredictionServiceSettings;
@@ -15,25 +14,31 @@ public class VertexAIAdapter extends VertexAI {
 
     private String geminiApiKey;
 
+    private String geminiEndpoint;
+
     private PredictionServiceClient predictionServiceClient;
 
     public VertexAIAdapter(String geminiEndpoint, String geminiApiKey) {
-        // Avoid NPE
-        super("", "");
+        // Avoid exception
+        super("dummy", "dummy");
         this.geminiApiKey = geminiApiKey;
-        setApiEndpoint(geminiEndpoint);
+        this.geminiEndpoint = geminiEndpoint;
     }
 
     @Override
-    public PredictionServiceClient getPredictionServiceClient() throws IOException {
+    public PredictionServiceClient getPredictionServiceClient() {
         if (predictionServiceClient == null) {
-            PredictionServiceSettings settings = PredictionServiceSettings.newBuilder()
-                .setEndpoint(getApiEndpoint())
-                .setCredentialsProvider(new NoCredentialsProvider())
-                .setTransportChannelProvider(InstantiatingHttpJsonChannelProvider.newBuilder().build())
-                .build();
-            var predictionServiceAdapter = new PredictionServiceAdapter(settings, geminiApiKey);
-            predictionServiceClient = new PredictionServiceClient(predictionServiceAdapter) {};
+            try {
+                PredictionServiceSettings settings = PredictionServiceSettings.newBuilder()
+                    .setEndpoint(geminiEndpoint)
+                    .setCredentialsProvider(new NoCredentialsProvider())
+                    .setTransportChannelProvider(InstantiatingHttpJsonChannelProvider.newBuilder().build())
+                    .build();
+                var predictionServiceAdapter = new PredictionServiceAdapter(settings, geminiApiKey);
+                predictionServiceClient = new PredictionServiceClient(predictionServiceAdapter) {};
+            } catch (IOException exception) {
+                throw new RuntimeException("Cannot create PredictionServiceClient");
+            }
         }
         return predictionServiceClient;
     }

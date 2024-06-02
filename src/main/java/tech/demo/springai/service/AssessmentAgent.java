@@ -1,6 +1,7 @@
 package tech.demo.springai.service;
 
-import org.springframework.ai.chat.ChatResponse;
+
+import org.springframework.ai.chat.model.ChatResponse;
 
 import reactor.core.publisher.Flux;
 
