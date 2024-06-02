@@ -33,8 +33,7 @@ class Queue {
 }
 
 const queue = new Queue();
-
-const URL = '/stream/code/review/stage/0';
+let combinedResponses;
 
 const agentTypeLabel = {
 	QUALITY_ASSESSMENT: 'QUALITY ASSESSMENT: \n',
@@ -50,7 +49,8 @@ function sendText() {
 	let count = 1;
 	const inputText = document.getElementById('inputText').value;
 	const outputElement = document.getElementById('output');
-	const loader = document.getElementById('loader');
+    const loader = document.getElementById('loader');
+    combinedResponses = {};
 
 	//Clear queue
 	queue.clear();
@@ -68,7 +68,7 @@ function sendText() {
 	loader.style.display = 'block';
 	let agentTypePrintState = {
 	}
-	fetch(URL, {
+	fetch('/stream/code/review/stage/0', {
 		method: 'POST',
 		signal: controller.signal, // Pass the signal to abort the fetch
 		headers: {
@@ -94,7 +94,8 @@ function sendText() {
 							var jsonObject = toJsonObject(item);
 							let response = jsonObject["response"];
 							let agentType = jsonObject["agentType"];
-							if (typeof response !== 'undefined') {
+                            if (typeof response !== 'undefined') {
+                                combineResponses(response, agentType);
 								if (agentTypePrintState[agentType] == 0 || typeof agentTypePrintState[agentType] === 'undefined') {
 									let prefix = count == 1 ? count + "." : "\n" + count + ".";
 									queue.enqueue(prefix + getLabel(agentType));
@@ -107,7 +108,7 @@ function sendText() {
 							}
 						}
 						controller.enqueue(value);
-						push();
+						// push();
 					});
 				}
 				push();
@@ -168,7 +169,10 @@ function sendText() {
 		console.error('Error:', error);
 		// Hide loading animation on error
 		loader.style.display = 'none';
-	});
+    }).finally(() => {
+        console.log(combinedResponses);
+        sendCombinedRequest();
+    });
 }
 
 function stop() {
@@ -186,4 +190,61 @@ function stopStreaming() {
 		loader.style.display = 'none'; // Hide the loading animation
 		queue.clear();
 	}
+}
+
+function combineResponses(response, agentType) {
+    if (!combinedResponses[agentType]) {
+        combinedResponses[agentType] = "";
+    }
+    combinedResponses[agentType] += response;
+}
+
+function sendCombinedRequest() {
+    fetch('/stream/code/review/stage/1/refactor', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(combinedResponses)
+    })
+    .then(response => {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        return new ReadableStream({
+            start(controller) {
+                function pushText(value) {
+                    const text = decoder.decode(value, { stream: true });
+                    let index = 0;
+                    const refactorInterval = setInterval(() => {
+                        if (index < text.length) {
+                            document.getElementById('textDisplay').textContent += text[index];
+                            index++;
+                        } else {
+                            clearInterval(refactorInterval);
+                        }
+                    }, intervalTime);
+                }
+
+                function read() {
+                    return reader.read().then(({ done, value }) => {
+                        if (done) {
+                            controller.close();
+                            return;
+                        }
+                        pushText(value);
+                        return read();
+                    }).catch(error => {
+                        console.error('Error reading response:', error);
+                        controller.error(error);
+                    });
+                }
+
+                return read();
+            }
+        });
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
