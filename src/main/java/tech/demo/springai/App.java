@@ -24,10 +24,10 @@ public class App {
         SpringApplication.run(App.class, args);
     }
 
-    @Bean
-    VertexAiGeminiChatModel chatClient(VertexAIAdapter vertexAIAdapter) {
-        return new VertexAiGeminiChatModel(vertexAIAdapter);
-    }
+    // @Bean
+    // VertexAiGeminiChatModel chatClient(VertexAIAdapter vertexAIAdapter) {
+    //     return new VertexAiGeminiChatModel(vertexAIAdapter);
+    // }
 
     @Bean
     VertexAIAdapter vertexAIAdapter() {
