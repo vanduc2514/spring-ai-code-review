@@ -8,8 +8,16 @@
             "jdkDistro": "tem",
             "installMaven": "true",
             "mavenVersion": "3.8.8"
+        },
+        "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
+            "version": "1.30.1",
+            "helm": "none",
+            "minikube": "none"
         }
     },
+    "runArgs": [
+        "--volume=${localEnv:HOME}/.kube:/home/vscode/.kube"
+    ],
     "customizations": {
         "vscode": {
             "settings": {
@@ -33,7 +41,8 @@
                 "hediet.vscode-drawio",
                 "vmware.vscode-boot-dev-pack",
                 "eamodio.gitlens",
-                "vscjava.vscode-lombok"
+                "vscjava.vscode-lombok",
+                "ms-kubernetes-tools.vscode-kubernetes-tools"
             ]
         }
     },
