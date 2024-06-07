@@ -51,6 +51,20 @@ public class CodeAssistantController {
                                 chatResponse, AgentType.QUALITY_ASSESSMENT)));
     }
 
+    @PostMapping(
+        value = "/stream/code/review/stage/1",
+        consumes = MediaType.APPLICATION_JSON_VALUE,
+        produces = MediaType.APPLICATION_NDJSON_VALUE
+    )
+    public Flux<RefactorCodeResponse> streamRefactor(@RequestBody RefactorCodeRequest refactorCodeRequest) {
+        var assessmentMap = toAssessmentMap(refactorCodeRequest.getAssessments());
+        return refactorAgent.refactorCode(
+                refactorCodeRequest.getCodeSnippet(),
+                assessmentMap.get(AgentType.LOGIC_ASSESSMENT),
+                assessmentMap.get(AgentType.QUALITY_ASSESSMENT))
+            .map(this::mapRefactorCodeResponse);
+    }
+
     private Map<AgentType, String> toAssessmentMap(List<AgentResponse> assessments) {
         var assessmentMap = new HashMap<AgentType, String>(assessments.size());
         assessments.forEach(agent -> {
@@ -63,6 +77,12 @@ public class CodeAssistantController {
         return AgentResponse.builder()
                 .agentType(agentType)
                 .response(getChatResponseContent(chatResponse))
+                .build();
+    }
+
+    private RefactorCodeResponse mapRefactorCodeResponse(ChatResponse chatResponse) {
+        return RefactorCodeResponse.builder()
+                .refactoredCode(getChatResponseContent(chatResponse))
                 .build();
     }
 
