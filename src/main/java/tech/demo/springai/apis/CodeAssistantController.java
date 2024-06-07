@@ -21,6 +21,7 @@ import tech.demo.springai.dtos.RefactorCodeRequest;
 import tech.demo.springai.dtos.RefactorCodeResponse;
 import tech.demo.springai.service.LogicAssementAgent;
 import tech.demo.springai.service.QualityAssessmentAgent;
+import tech.demo.springai.service.RefactorAgent;
 import tech.demo.springai.service.PerformanceAssessmentAgent;
 import tech.demo.springai.service.SecurityAssessmentAgent;
 
@@ -33,6 +34,9 @@ public class CodeAssistantController {
 
     @Autowired
     private QualityAssessmentAgent qualityAssessmentAgent;
+
+    @Autowired
+    private PerformanceAssessmentAgent performanceAssessmentAgent;
 
     @Autowired
     private SecurityAssessmentAgent securityAssessmentAgent;

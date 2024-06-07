@@ -2,10 +2,9 @@ package tech.demo.springai.service;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.ai.chat.ChatClient;
-import org.springframework.ai.chat.ChatResponse;
-import org.springframework.ai.chat.StreamingChatClient;
 import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.model.StreamingChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
@@ -26,7 +25,7 @@ public class PerformanceAssessmentAgent implements AssessmentAgent {
     private Resource userPromptResource;
 
     @Autowired
-    private StreamingChatClient chatClient;
+    private StreamingChatModel chatClient;
 
     @Override
     public Flux<ChatResponse> assessCodeSnippet(String codeSnippet) {
