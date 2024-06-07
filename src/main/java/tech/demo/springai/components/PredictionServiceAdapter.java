@@ -24,7 +24,7 @@ import com.google.protobuf.TypeRegistry;
 
 public class PredictionServiceAdapter extends PredictionServiceStub {
 
-    private static final String DEFAULT_MODEL = "gemini-pro";
+    private static final String DEFAULT_MODEL = "gemini-1.5-pro";
 
     private PredictionServiceSettings predictionServiceSettings;
 
