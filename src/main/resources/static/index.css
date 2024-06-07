@@ -7,7 +7,7 @@ body {
     align-items: flex-start;
     width: 100%;
 }
-#inputText, #textDisplay {
+#inputText, #refactored-code {
     width: 50%;
     height: 200px;
     box-sizing: border-box;
@@ -15,7 +15,7 @@ body {
 #inputText {
     margin-right: 10px;
 }
-#textDisplay {
+#refactored-code {
     border: 1px solid #ccc;
     padding: 10px;
     overflow-y: auto;
@@ -31,6 +31,39 @@ body {
     white-space: pre-wrap;
     overflow: hidden; /* Ensures no scrollbars initially */
     transition: height 0.2s ease; /* Smooth height transition */
+}
+#assesment {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 280px); /* Adjust this as necessary to fit your layout */
+    padding-top: 10px;
+    overflow: hidden; /* Ensures no scrollbars initially */
+}
+
+#assesment > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px; /* Add padding as needed */
+    height: 100%; /* Ensure each section takes full height */
+    box-sizing: border-box;
+}
+
+#assesment > div:not(:first-child) {
+    border-left: 1px solid #ccc; /* Border to separate assessments */
+}
+
+h4 {
+    margin: 0;
+    padding-bottom: 20px;
+}
+
+#assesment > div > div {
+    padding: 0 10px; /* Add padding to left and right of the output divs */
+    width: 100%; /* Ensure it takes full width available */
+    box-sizing: border-box; /* Include padding in width calculation */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
 }
 .loader {
     border: 4px solid #f3f3f3;

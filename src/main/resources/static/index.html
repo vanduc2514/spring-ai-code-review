@@ -5,14 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI review code</title>
     <link rel="stylesheet" href="index.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.5/purify.min.js"></script>
+    <script src="index.js"></script>
 </head>
-<script src="index.js"></script>
 <body>
 
 <h1>AI review code</h1>
 <div class="container">
     <textarea id="inputText" placeholder="Enter your code here..."></textarea>
-    <div id="textDisplay">Refactored code</div>
+    <div id="refactored-code"></div>
 </div>
 <div class="button-container">
     <button onclick="sendText()">Send</button>
@@ -20,7 +22,24 @@
 </div>
 <div class="loader" id="loader"></div>
 
-<div id="output"></div>
+<div id="assesment">
+    <div id="logic-assessment">
+        <h4>Logic Assessment</h4>
+        <div id="logic-assessment-output" class="assesment-output"></div>
+    </div>
+    <div id="quality-assessment">
+        <h4>Quality Assessment</h4>
+        <div id="quality-assessment-output" class="assesment-output"></div>
+    </div>
+    <div id="security-assessment">
+        <h4>Security Assessment</h4>
+        <div id="security-assessment-output" class="assesment-output"></div>
+    </div>
+    <div id="performance-assessment">
+        <h4>Performance Assessment</h4>
+        <div id="performance-assessment-output" class="assesment-output"></div>
+    </div>
+</div>
 
 </body>
 </html>

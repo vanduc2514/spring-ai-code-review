@@ -1,250 +1,208 @@
-class Queue {
-	constructor() {
-		this.items = {}
-		this.frontIndex = 0
-		this.backIndex = 0
-	}
-	enqueue(item) {
-		this.items[this.backIndex] = item
-		this.backIndex++
-		return item + ' inserted'
-	}
-	dequeue() {
-		if (Object.getOwnPropertyNames(this.items).length !== 0) {
-			const item = this.items[this.frontIndex]
-			delete this.items[this.frontIndex]
-			this.frontIndex++
-			return item;
-		} else {
-			return undefined;
-		}
-	}
-	peek() {
-		return this.items[this.frontIndex]
-	}
-	clear() {
-		this.items = {}
-		this.frontIndex = 0
-		this.backIndex = 0
-	}
-	get printQueue() {
-		return this.items;
-	}
+const intervalTime = 5
+const outputPostfix = "output"
+let controller // To hold the controller for the readable stream
+let assessmentTimeout
+let refactoredCodeTimeout
+let loaderElement
+let inputTextElement
+let refactoredCodeElement
+let assessmentOutputElement
+let logicAsessmentOutputElement
+let qualityAssessmentOutputElement
+let securityAssessmentOutputElement
+let performanceAssessmentOutputElement
+
+window.onload = event => {
+    loaderElement = document.getElementById("loader")
+    inputTextElement = document.getElementById("inputText")
+    refactoredCodeElement = document.getElementById("refactored-code")
+    assessmentOutputElement = document.getElementsByClassName("assesment-output")
+    logicAsessmentOutputElement = document.getElementById(`logic-assessment-${outputPostfix}`)
+    qualityAssessmentOutputElement = document.getElementById(`quality-assessment-${outputPostfix}`)
+    securityAssessmentOutputElement = document.getElementById(`security-assessment-${outputPostfix}`)
+    performanceAssessmentOutputElement = document.getElementById(`performance-assessment-${outputPostfix}`)
 }
 
-const queue = new Queue();
-let combinedResponses;
-
-const agentTypeLabel = {
-	QUALITY_ASSESSMENT: 'QUALITY ASSESSMENT: \n',
-	SECURE_ASSESSMENT: 'SECURE ASSESSMENT: \n',
-	LOGIC_ASSESSMENT: 'LOGIC ASSESSMENT: \n'
-};
-const intervalTime = 10;
-
-let controller; // To hold the controller for the readable stream
-let intervalId; // To hold the ID of the interval
-
-function sendText() {
-	let count = 1;
-	const inputText = document.getElementById('inputText').value;
-	const outputElement = document.getElementById('output');
-    const loader = document.getElementById('loader');
-    combinedResponses = {};
-
-	//Clear queue
-	queue.clear();
-
-	// Clear previous output
-	outputElement.innerHTML = '';
-
-	// Hide loading animation if visible
-	loader.style.display = 'none';
-
-	// Create new controller
-	controller = new AbortController();
-
-	// Show loading animation
-	loader.style.display = 'block';
-	let agentTypePrintState = {
-	}
-	fetch('/stream/code/review/stage/0', {
-		method: 'POST',
-		signal: controller.signal, // Pass the signal to abort the fetch
-		headers: {
-			"Accept": "text/event-stream",
-			"Content-Type": "text/plain"
-		},
-		body: inputText
-	}).then(response => {
-		const reader = response.body.getReader();
-		return new ReadableStream({
-			start(controller) {
-				function push() {
-					reader.read().then(({ done, value }) => {
-						if (done) {
-							controller.close();
-							return;
-						}
-
-						let text = new TextDecoder("utf-8").decode(value);
-						var arr = text.split("\n\ndata:");
-						for (let i in arr) {
-							let item = arr[i];
-							var jsonObject = toJsonObject(item);
-							let response = jsonObject["response"];
-							let agentType = jsonObject["agentType"];
-                            if (typeof response !== 'undefined') {
-                                combineResponses(response, agentType);
-								if (agentTypePrintState[agentType] == 0 || typeof agentTypePrintState[agentType] === 'undefined') {
-									let prefix = count == 1 ? count + "." : "\n" + count + ".";
-									queue.enqueue(prefix + getLabel(agentType));
-									count++;
-								}
-								queue.enqueue(response);
-								if (typeof intervalId == 'undefined') {
-									setUpInterval();
-								}
-							}
-						}
-						controller.enqueue(value);
-						// push();
-					});
-				}
-				push();
-
-				function setUpInterval() {
-					let i = 0;
-					let item = queue.dequeue()
-					intervalId = setInterval(() => {
-						if (typeof item !== 'undefined' && i < item.length) {
-							// Once the first character is displayed, hide the loader
-                            loader.style.display = 'none';
-                            outputElement.textContent += item.charAt(i);
-                            output.style.height = `${output.scrollHeight}px`;
-							i++;
-						} else {
-							item = queue.dequeue();
-							i = 0;
-						}
-					}, intervalTime);
-				}
-
-				function toJsonObject(item) {
-					if (!item.startsWith("{")) {
-						let index = item.indexOf("{");
-						if (index != -1) {
-							item = item.substring(index);
-						} else {
-							item = "";
-						}
-					}
-					var jsonObject = {};
-					if (item !== "") {
-						try {
-							jsonObject = JSON.parse(item);
-							console.log(jsonObject);
-						} catch (err) {
-							console.log(err);
-						}
-					}
-					return jsonObject;
-				}
-
-				function getLabel(agentType) {
-					let value = agentTypePrintState[agentType];
-					if (typeof value == "undefined") {
-						value = 0;
-						agentTypePrintState[agentType] = value;
-					}
-					let label = agentTypeLabel[agentType];
-					let finaleLabel = label == null ? agentType + ": \n" : label;
-					agentTypePrintState[agentType] = ++value;
-
-					return finaleLabel;
-				}
-			}
-		})
-	}).catch(error => {
-		console.error('Error:', error);
-		// Hide loading animation on error
-		loader.style.display = 'none';
-    }).finally(() => {
-        console.log(combinedResponses);
-        sendCombinedRequest();
-    });
-}
-
-function stop() {
-	clearInterval(intervalId)
-}
-
-function sleep(ms) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function stopStreaming() {
-	if (controller) {
-		controller.abort(); // Abort the fetch request
-		const loader = document.getElementById('loader');
-		loader.style.display = 'none'; // Hide the loading animation
-		queue.clear();
-	}
-}
-
-function combineResponses(response, agentType) {
-    if (!combinedResponses[agentType]) {
-        combinedResponses[agentType] = "";
+const sendText = event => {
+    // Hide loading animation if visible
+    loaderElement.style.display = "none"
+    // Show loading animation
+    loaderElement.style.display = "block"
+    // Clear previous output
+    for (let index = 0; index < assessmentOutputElement.length; index++) {
+        assessmentOutputElement[index].innerHTML = ""
     }
-    combinedResponses[agentType] += response;
+    // Clear previous refactored code
+    refactoredCodeElement.innerHTML = ""
+    // Clear timeout
+    if (assessmentTimeout) {
+        clearTimeout(assessmentTimeout)
+    }
+    if (refactoredCodeTimeout) {
+        clearTimeout(refactoredCodeTimeout)
+    }
+    controller = new AbortController()
+
+    requestAssessment(inputTextElement.value)
+    .then(stream => {
+        const teed = stream.tee()
+        readAssessment(teed[0])
+        return combineAssessment(teed[1])
+    })
+    .then(assessments => requestRefactor(inputTextElement.value, assessments))
+    .then(readRefactor)
+    .catch(handleError)
 }
 
-function sendCombinedRequest() {
-    fetch('/stream/code/review/stage/1/refactor', {
-        method: 'POST',
+const stopStreaming = () => {
+    loaderElement.style.display = "none"; // Hide the loading animation
+    if (controller || !controller.aborted) {
+        controller.abort("user canceled"); // Abort the fetch request
+    }
+    if (assessmentTimeout) {
+        clearTimeout(assessmentTimeout)
+    }
+    if (refactoredCodeTimeout) {
+        clearTimeout(refactoredCodeTimeout)
+    }
+}
+
+const requestAssessment = async codeSnippet => {
+    return fetch("/stream/code/review/stage/0", {
+        method: "POST",
+        signal: controller.signal, // Pass the signal to abort the fetch
         headers: {
+            "Accept": "application/x-ndjson",
+            "Content-Type": "text/plain"
+        },
+        body: codeSnippet
+    }).then(readNdJsonStream)
+}
+
+const requestRefactor = async (codeSnippet, assessments) => {
+    return fetch("/stream/code/review/stage/1", {
+        method: "POST",
+        signal: controller.signal,
+        headers: {
+            "Accept": "application/x-ndjson",
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(combinedResponses)
-    })
-    .then(response => {
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
+        body: JSON.stringify({
+            codeSnippet,
+            assessments
+        })
+    }).then(readNdJsonStream)
+}
 
-        return new ReadableStream({
-            start(controller) {
-                function pushText(value) {
-                    const text = decoder.decode(value, { stream: true });
-                    let index = 0;
-                    const refactorInterval = setInterval(() => {
-                        if (index < text.length) {
-                            document.getElementById('textDisplay').textContent += text[index];
-                            index++;
-                        } else {
-                            clearInterval(refactorInterval);
-                        }
-                    }, intervalTime);
-                }
-
-                function read() {
-                    return reader.read().then(({ done, value }) => {
-                        if (done) {
-                            controller.close();
-                            return;
-                        }
-                        pushText(value);
-                        return read();
-                    }).catch(error => {
-                        console.error('Error reading response:', error);
-                        controller.error(error);
-                    });
-                }
-
-                return read();
+const readNdJsonStream = response => {
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder()
+    const process = (controller, { done, value }) => {
+        if (done) {
+            controller.close()
+            return;
+        }
+        const text = decoder.decode(value, {
+            stream: true
+        })
+        const payloads = text.split("\n")
+        for (const jsonString of payloads) {
+            const trimmed = jsonString.trim()
+            if (trimmed.length > 0) {
+                const json = JSON.parse(trimmed)
+                controller.enqueue(json)
             }
-        });
+        }
+        return reader.read().then(result => process(controller, result))
+    }
+    return new ReadableStream({
+        start: async controller => reader.read().then(result => process(controller, result))
     })
-    .catch(error => {
-        console.error('Error:', error);
-    });
+}
+
+const readAssessment = stream => {
+    const reader = stream.getReader()
+    loaderElement.style.display = "none"
+    const display = ({ done, value }) => {
+        if (done) {
+            for (let index = 0; index < assessmentOutputElement.length; index++) {
+                assessmentOutputElement[index].innerHTML = marked.parse(assessmentOutputElement[index].innerHTML)
+            }
+            return
+        }
+        const responseText = value.response;
+        let index = 0;
+        // Function to append one character at a time
+        let outputElement
+        const appendCharacter = () => {
+            if (index < responseText.length && (outputElement = getAssesmentOutputElement(value.agentType))) {
+                outputElement.innerHTML += responseText[index]
+                index++
+                // Call the function again to append next character
+                assessmentTimeout = setTimeout(appendCharacter, intervalTime) // Adjust the interval as needed
+            } else {
+                // Continue reading the stream after finishing current response
+                reader.read().then(display);
+            }
+        };
+        appendCharacter()
+    }
+    reader.read().then(display)
+}
+
+const getAssesmentOutputElement = agentType => {
+    switch (agentType) {
+        case "LOGIC_ASSESSMENT": return logicAsessmentOutputElement
+        case "QUALITY_ASSESSMENT": return qualityAssessmentOutputElement
+        case "SECURITY_ASSESSMENT": return securityAssessmentOutputElement
+        case "PERFORMANCE_ASSESSMENT": return performanceAssessmentOutputElement
+    }
+}
+
+const combineAssessment = async stream => {
+    const reader = stream.getReader()
+    const combinedAssessment = {}
+    const combine = ({ done, value }) => {
+        if (done) {
+            return Object.values(combinedAssessment)
+        }
+        const agentType = value.agentType
+        if (!combinedAssessment[agentType]) {
+            combinedAssessment[agentType] = { response: "", agentType }
+        }
+        combinedAssessment[agentType].response += value.response
+        return reader.read().then(combine)
+    }
+    return reader.read().then(combine)
+}
+
+const readRefactor = stream => {
+    const reader = stream.getReader()
+    const display = ({ done, value }) => {
+        if (done) {
+            refactoredCodeElement.innerHTML = DOMPurify.sanitize(marked.parse(refactoredCodeElement.innerHTML))
+                .replaceAll("&amp;", "&")
+            return
+        }
+        const refactoredCode = value.refactoredCode
+        let index = 0
+        const appendCharacter = () => {
+            if (index < refactoredCode.length) {
+                refactoredCodeElement.innerHTML += refactoredCode[index]
+                index++
+                // Call the function again to append next character
+                refactoredCodeTimeout = setTimeout(appendCharacter, intervalTime) // Adjust the interval as needed
+            } else {
+                // Continue reading the stream after finishing current response
+                reader.read().then(display)
+            }
+        }
+        appendCharacter()
+    }
+    reader.read().then(display)
+}
+
+const handleError = (error) => {
+    console.error(error)
+    loaderElement.style.display = "none"
 }
