@@ -46,19 +46,22 @@ public class CodeAssistantController {
 
     @PostMapping("/stream/code/review/stage/0")
     public Flux<AgentResponse> streamCodeReviewStage0(@RequestBody String codeSnippet) {
-        return Flux.merge(
-                logicAssementAgent.assessCodeSnippet(codeSnippet)
-                        .map(chatResponse -> mapAgentResponse(
-                                chatResponse, AgentType.LOGIC_ASSESSMENT)),
-                qualityAssessmentAgent.assessCodeSnippet(codeSnippet)
-                        .map(chatResponse -> mapAgentResponse(
-                                chatResponse, AgentType.QUALITY_ASSESSMENT)),
-                performanceAssessmentAgent.assessCodeSnippet(codeSnippet)
-                        .map(chatResponse -> mapAgentResponse(
-                                chatResponse, AgentType.PERFORMANCE_ASSESSMENT)),
-                securityAssessmentAgent.assessCodeSnippet(codeSnippet)
-                        .map(chatResponse -> mapAgentResponse(
-                                chatResponse, AgentType.SECURITY_ASSESSMENT)));
+        return qualityAssessmentAgent.assessCodeSnippet(codeSnippet)
+        .map(chatResponse -> mapAgentResponse(
+                chatResponse, AgentType.QUALITY_ASSESSMENT));
+        // return Flux.merge(
+                // logicAssementAgent.assessCodeSnippet(codeSnippet)
+                //         .map(chatResponse -> mapAgentResponse(
+                //                 chatResponse, AgentType.LOGIC_ASSESSMENT)),
+                // qualityAssessmentAgent.assessCodeSnippet(codeSnippet)
+                //         .map(chatResponse -> mapAgentResponse(
+                //                 chatResponse, AgentType.QUALITY_ASSESSMENT))
+                // performanceAssessmentAgent.assessCodeSnippet(codeSnippet)
+                //         .map(chatResponse -> mapAgentResponse(
+                //                 chatResponse, AgentType.PERFORMANCE_ASSESSMENT)),
+                // securityAssessmentAgent.assessCodeSnippet(codeSnippet)
+                //         .map(chatResponse -> mapAgentResponse(
+                //                 chatResponse, AgentType.SECURITY_ASSESSMENT)));
     }
 
     @PostMapping(
