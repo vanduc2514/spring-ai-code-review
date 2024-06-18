@@ -43,8 +43,8 @@ const sendText = event => {
     Promise.all([
         requestReview("logic", logicModel, inputText, logicAsessmentOutputElement, controller),
         requestReview("quality", qualityModel, inputText, qualityAssessmentOutputElement, controller),
-        // requestReview("performance", performanceModel, inputText, performanceAssessmentOutputElement, controller),
-        // requestReview("security", securityModel, inputText, securityAssessmentOutputElement, controller),
+        requestReview("performance", performanceModel, inputText, performanceAssessmentOutputElement, controller),
+        requestReview("security", securityModel, inputText, securityAssessmentOutputElement, controller),
     ])
     .then(assessments => requestRefactor(refactorModel, inputText, assessments, refactoredCodeElement, controller))
     .catch(handleError)
