@@ -56,6 +56,8 @@ public class App {
             String headerValue = request.getHeader("X-Chat-Model");
             if (headerValue != null && headerValue.contains("gemini")) {
                 return new VertexAiGeminiChatModel(vertexAIAdapter);
+            } else if (headerValue != null && headerValue.contains("ollama-dolphin-phi")) {
+                return new OllamaChatModel(ollamaApi, new OllamaOptions().withModel("dolphin-phi"));
             } else if (headerValue != null && headerValue.contains("ollama-phi3")) {
                 return new OllamaChatModel(ollamaApi, new OllamaOptions().withModel("phi3"));
             } else if (headerValue != null && headerValue.contains("ollama-tinyllama")) {
