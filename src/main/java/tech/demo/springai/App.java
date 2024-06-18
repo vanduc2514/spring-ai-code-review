@@ -57,7 +57,7 @@ public class App {
             if (headerValue != null && headerValue.contains("gemini")) {
                 return new VertexAiGeminiChatModel(vertexAIAdapter);
             } else if (headerValue != null && headerValue.contains("ollama-dolphin-phi")) {
-                return new OllamaChatModel(ollamaApi, new OllamaOptions().withModel("dolphin-phi"));
+                return new OllamaChatModel(ollamaApi, new OllamaOptions().withModel("dolphin-phi:2.7b"));
             } else if (headerValue != null && headerValue.contains("ollama-phi3")) {
                 return new OllamaChatModel(ollamaApi, new OllamaOptions().withModel("phi3"));
             } else if (headerValue != null && headerValue.contains("ollama-tinyllama")) {
