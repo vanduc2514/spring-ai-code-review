@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import reactor.core.publisher.Flux;
@@ -27,6 +28,7 @@ import tech.demo.springai.service.SecurityAssessmentAgent;
 
 
 @RestController
+@RequestMapping("/assistant/code")
 public class CodeAssistantController {
 
     @Autowired
@@ -44,25 +46,37 @@ public class CodeAssistantController {
     @Autowired
     private RefactorAgent refactorAgent;
 
-    @PostMapping("/stream/code/review/stage/0")
-    public Flux<AgentResponse> streamCodeReviewStage0(@RequestBody String codeSnippet) {
-        return Flux.merge(
-                logicAssementAgent.assessCodeSnippet(codeSnippet)
+    @PostMapping("/review/logic")
+    public Flux<AgentResponse> streamCodeReviewLogic(@RequestBody String codeSnippet) {
+        return logicAssementAgent.assessCodeSnippet(codeSnippet)
                         .map(chatResponse -> mapAgentResponse(
-                                chatResponse, AgentType.LOGIC_ASSESSMENT)),
-                qualityAssessmentAgent.assessCodeSnippet(codeSnippet)
+                                chatResponse, AgentType.LOGIC_ASSESSMENT));
+    }
+
+    @PostMapping("/review/quality")
+    public Flux<AgentResponse> streamCodeReviewQuality(@RequestBody String codeSnippet) {
+        return qualityAssessmentAgent.assessCodeSnippet(codeSnippet)
                         .map(chatResponse -> mapAgentResponse(
-                                chatResponse, AgentType.QUALITY_ASSESSMENT)),
-                performanceAssessmentAgent.assessCodeSnippet(codeSnippet)
+                                chatResponse, AgentType.QUALITY_ASSESSMENT));
+    }
+
+    @PostMapping("/review/performance")
+    public Flux<AgentResponse> streamCodeReviewPerformance(@RequestBody String codeSnippet) {
+        return performanceAssessmentAgent.assessCodeSnippet(codeSnippet)
                         .map(chatResponse -> mapAgentResponse(
-                                chatResponse, AgentType.PERFORMANCE_ASSESSMENT)),
-                securityAssessmentAgent.assessCodeSnippet(codeSnippet)
+                                chatResponse, AgentType.PERFORMANCE_ASSESSMENT));
+    }
+
+
+    @PostMapping("/review/security")
+    public Flux<AgentResponse> streamCodeReviewSecurity(@RequestBody String codeSnippet) {
+        return securityAssessmentAgent.assessCodeSnippet(codeSnippet)
                         .map(chatResponse -> mapAgentResponse(
-                                chatResponse, AgentType.SECURITY_ASSESSMENT)));
+                                chatResponse, AgentType.SECURITY_ASSESSMENT));
     }
 
     @PostMapping(
-        value = "/stream/code/review/stage/1",
+        value = "/refactor",
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_NDJSON_VALUE
     )
@@ -70,8 +84,8 @@ public class CodeAssistantController {
         var assessmentMap = toAssessmentMap(refactorCodeRequest.getAssessments());
         return refactorAgent.refactorCode(
                 refactorCodeRequest.getCodeSnippet(),
-                assessmentMap.get(AgentType.LOGIC_ASSESSMENT),
-                assessmentMap.get(AgentType.QUALITY_ASSESSMENT))
+                assessmentMap.getOrDefault(AgentType.LOGIC_ASSESSMENT, ""),
+                assessmentMap.getOrDefault(AgentType.QUALITY_ASSESSMENT, ""))
             .map(this::mapRefactorCodeResponse);
     }
 
