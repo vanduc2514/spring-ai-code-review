@@ -85,7 +85,9 @@ public class CodeAssistantController {
         return refactorAgent.refactorCode(
                 refactorCodeRequest.getCodeSnippet(),
                 assessmentMap.getOrDefault(AgentType.LOGIC_ASSESSMENT, ""),
-                assessmentMap.getOrDefault(AgentType.QUALITY_ASSESSMENT, ""))
+                assessmentMap.getOrDefault(AgentType.QUALITY_ASSESSMENT, ""),
+                assessmentMap.getOrDefault(AgentType.SECURITY_ASSESSMENT, ""),
+                assessmentMap.getOrDefault(AgentType.PERFORMANCE_ASSESSMENT, ""))
             .map(this::mapRefactorCodeResponse);
     }
 
