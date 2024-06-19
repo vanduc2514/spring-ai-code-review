@@ -45,8 +45,10 @@ const sendText = event => {
         requestReview("quality", qualityModel, inputText, qualityAssessmentOutputElement, controller),
         requestReview("performance", performanceModel, inputText, performanceAssessmentOutputElement, controller),
         requestReview("security", securityModel, inputText, securityAssessmentOutputElement, controller),
-    ])
-    .then(assessments => requestRefactor(refactorModel, inputText, assessments, refactoredCodeElement, controller))
+    ]).then(assessments => {
+        loaderElement.style.display = "block"
+        requestRefactor(refactorModel, inputText, assessments, refactoredCodeElement, controller)
+    })
     .catch(handleError)
 }
 
@@ -110,7 +112,10 @@ const requestRefactor = async (model, codeSnippet, assessments, outputElement, c
             assessments
         })
     }).then(readNdJsonStream)
-    .then(stream => streamContent(stream, outputElement, value => value.refactoredCode))
+    .then(stream => {
+        loaderElement.style.display = "none"
+        streamContent(stream, outputElement, value => value.refactoredCode)
+    })
 }
 
 const readNdJsonStream = response => {
