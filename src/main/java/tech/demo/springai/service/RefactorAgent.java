@@ -21,7 +21,7 @@ public class RefactorAgent {
     @Value("classpath:prompts/system-refactor-code-message.st")
     private Resource systemPromptResource;
 
-    @Value("classpath:/prompts/user-refactor-code-message.st")
+    @Value("classpath:/prompts/user-code-message.st")
     private Resource userPromptResource;
 
     @Autowired
@@ -30,15 +30,21 @@ public class RefactorAgent {
     public Flux<ChatResponse> refactorCode(
         String codeSnippet,
         String logicAssessment,
-        String qualityAssessment
+        String qualityAssessment,
+        String securityAssessment,
+        String performanceAssessment
     ) {
-        var systemMessage = new SystemPromptTemplate(systemPromptResource).createMessage();
-        var userMessage = new PromptTemplate(userPromptResource).createMessage(
-            Map.of(
-                "codeSnippet", codeSnippet,
-                "logicAssessment", logicAssessment,
-                "qualityAssessment", qualityAssessment
+        var systemMessage = new SystemPromptTemplate(systemPromptResource)
+            .createMessage(
+                Map.of(
+                    "logicAssessment", logicAssessment,
+                    "qualityAssessment", qualityAssessment,
+                    "securityAssessment", securityAssessment,
+                    "performanceAssessment", performanceAssessment
             ));
+        var userMessage = new PromptTemplate(userPromptResource)
+            .createMessage(
+                Map.of("codeSnippet", codeSnippet));
         var prompt = new Prompt(List.of(systemMessage, userMessage));
         return chatClient.stream(prompt);
     }
