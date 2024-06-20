@@ -21,7 +21,7 @@ public class PerformanceAssessmentAgent implements AssessmentAgent {
     @Value("classpath:prompts/system-performance-assessment-message.st")
     private Resource systemPromptResource;
 
-    @Value("classpath:prompts/user-code-review-message.st")
+    @Value("classpath:prompts/user-code-message.st")
     private Resource userPromptResource;
 
     @Autowired

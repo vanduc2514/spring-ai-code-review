@@ -2,52 +2,40 @@ body {
     font-family: Arial, sans-serif;
     margin: 20px;
 }
+
 .container {
     display: flex;
     align-items: flex-start;
     width: 100%;
 }
+
 #inputText, #refactored-code {
     width: 50%;
-    height: 200px;
+    height: 250px;
     box-sizing: border-box;
-}
-#inputText {
-    margin-right: 10px;
-}
-#refactored-code {
-    border: 1px solid #ccc;
-    padding: 10px;
     overflow-y: auto;
+    padding: 10px;
+    border: 1px solid #ccc;
 }
+
 .button-container {
     margin-top: 20px; /* Increased margin for more spacing */
 }
-#output {
-    width: 100%;
-    height: 200px;
-    border: 1px solid #ccc;
-    margin-top: 20px;
-    white-space: pre-wrap;
-    overflow: hidden; /* Ensures no scrollbars initially */
-    transition: height 0.2s ease; /* Smooth height transition */
-}
+
 #assesment {
     display: flex;
-    flex-direction: row;
-    height: calc(100vh - 280px); /* Adjust this as necessary to fit your layout */
+    height: 60vh; /* Adjust this as necessary to fit your layout */
     padding-top: 10px;
     overflow: hidden; /* Ensures no scrollbars initially */
 }
 
 #assesment > div {
     flex: 1;
-    display: flex;
-    flex-direction: column;
     align-items: center;
     padding-top: 10px; /* Add padding as needed */
     height: 100%; /* Ensure each section takes full height */
     box-sizing: border-box;
+    overflow-y: auto;
 }
 
 #assesment > div:not(:first-child) {
@@ -59,12 +47,23 @@ h4 {
     padding-bottom: 20px;
 }
 
-#assesment > div > div {
+.assessment-header {
     padding: 0 10px; /* Add padding to left and right of the output divs */
     width: 100%; /* Ensure it takes full width available */
     box-sizing: border-box; /* Include padding in width calculation */
-    overflow-y: auto; /* Enable vertical scrolling if content exceeds height */
+    margin-bottom: 20px;
 }
+
+.refactor-header {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.assessment-output {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 .loader {
     border: 4px solid #f3f3f3;
     border-top: 4px solid #3498db;
@@ -75,6 +74,7 @@ h4 {
     margin: 20px auto;
     display: none; /* Initially hidden */
 }
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }

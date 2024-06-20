@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI review code</title>
+    <title>AI Review Code</title>
     <link rel="stylesheet" href="index.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.5/purify.min.js"></script>
@@ -11,33 +11,78 @@
 </head>
 <body>
 
-<h1>AI review code</h1>
+<h1>AI Review Code</h1>
 <div class="container">
     <textarea id="inputText" placeholder="Enter your code here..."></textarea>
+    <div class="refactor-header">
+        <h4>Refactor</h4>
+        <select id="refactor-model-select">
+            <option value="gemini">Gemini</option>
+            <option value="ollama-dolphin-phi">Ollama Dolphin Phi</option>
+            <option value="ollama-phi3">Ollama Phi3</option>
+            <option value="ollama-tinyllama">Ollama TinyLlama</option>
+        </select>
+    </div>
     <div id="refactored-code"></div>
 </div>
+
 <div class="button-container">
     <button onclick="sendText()">Send</button>
     <button onclick="stopStreaming()">Stop</button>
 </div>
+
 <div class="loader" id="loader"></div>
 
 <div id="assesment">
     <div id="logic-assessment">
-        <h4>Logic Assessment</h4>
-        <div id="logic-assessment-output" class="assesment-output"></div>
+        <div class="assessment-header">
+            <h4>Logic Assessment</h4>
+            <select id="logic-model-select">
+                <option value="ollama-dolphin-phi">Ollama Dolphin Phi</option>
+                <option value="gemini">Gemini</option>
+                <option value="ollama-phi3">Ollama Phi3</option>
+                <option value="ollama-tinyllama">Ollama TinyLlama</option>
+            </select>
+        </div>
+        <div>
+            <div id="logic-assessment-output" class="assessment-output"></div>
+        </div>
     </div>
     <div id="quality-assessment">
-        <h4>Quality Assessment</h4>
-        <div id="quality-assessment-output" class="assesment-output"></div>
+        <div class="assessment-header">
+            <h4>Quality Assessment</h4>
+            <select id="quality-model-select">
+                <option value="ollama-dolphin-phi">Ollama Dolphin Phi</option>
+                <option value="gemini">Gemini</option>
+                <option value="ollama-phi3">Ollama Phi3</option>
+                <option value="ollama-tinyllama">Ollama TinyLlama</option>
+            </select>
+        </div>
+        <div id="quality-assessment-output" class="assessment-output"></div>
     </div>
     <div id="security-assessment">
-        <h4>Security Assessment</h4>
-        <div id="security-assessment-output" class="assesment-output"></div>
+        <div class="assessment-header">
+            <h4>Security Assessment</h4>
+            <select id="security-model-select">
+                <option value="gemini">Gemini</option>
+                <option value="ollama-dolphin-phi">Ollama Dolphin Phi</option>
+                <option value="ollama-phi3">Ollama Phi3</option>
+                <option value="ollama-tinyllama">Ollama TinyLlama</option>
+            </select>
+        </div>
+        <div id="security-assessment-output" class="assessment-output"></div>
     </div>
     <div id="performance-assessment">
-        <h4>Performance Assessment</h4>
-        <div id="performance-assessment-output" class="assesment-output"></div>
+        <div class="assessment-header">
+            <h4>Performance Assessment</h4>
+            <select id="performance-model-select">
+                <option value="gemini">Gemini</option>
+                <option value="ollama-dolphin-phi">Ollama Dolphin Phi</option>
+                <option value="ollama-phi3">Ollama Phi3</option>
+                <option value="ollama-tinyllama">Ollama TinyLlama</option>
+            </select>
+        </div>
+        <div id="performance-assessment-output" class="assessment-output"></div>
     </div>
 </div>
 

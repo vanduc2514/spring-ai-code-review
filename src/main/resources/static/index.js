@@ -1,29 +1,26 @@
-const intervalTime = 5
 const outputPostfix = "output"
 let controller // To hold the controller for the readable stream
 let assessmentTimeout
 let refactoredCodeTimeout
 let loaderElement
-let inputTextElement
-let refactoredCodeElement
-let assessmentOutputElement
-let logicAsessmentOutputElement
-let qualityAssessmentOutputElement
-let securityAssessmentOutputElement
-let performanceAssessmentOutputElement
 
 window.onload = event => {
     loaderElement = document.getElementById("loader")
-    inputTextElement = document.getElementById("inputText")
-    refactoredCodeElement = document.getElementById("refactored-code")
-    assessmentOutputElement = document.getElementsByClassName("assesment-output")
-    logicAsessmentOutputElement = document.getElementById(`logic-assessment-${outputPostfix}`)
-    qualityAssessmentOutputElement = document.getElementById(`quality-assessment-${outputPostfix}`)
-    securityAssessmentOutputElement = document.getElementById(`security-assessment-${outputPostfix}`)
-    performanceAssessmentOutputElement = document.getElementById(`performance-assessment-${outputPostfix}`)
 }
 
 const sendText = event => {
+    const inputText = document.getElementById("inputText").value
+    const logicModel = document.getElementById("logic-model-select").value
+    const qualityModel = document.getElementById("quality-model-select").value
+    const securityModel = document.getElementById("security-model-select").value
+    const performanceModel = document.getElementById("performance-model-select").value
+    const refactorModel = document.getElementById("refactor-model-select").value
+    const assessmentOutputElement = document.getElementsByClassName("assessment-output")
+    const logicAsessmentOutputElement = document.getElementById(`logic-assessment-${outputPostfix}`)
+    const qualityAssessmentOutputElement = document.getElementById(`quality-assessment-${outputPostfix}`)
+    const securityAssessmentOutputElement = document.getElementById(`security-assessment-${outputPostfix}`)
+    const performanceAssessmentOutputElement = document.getElementById(`performance-assessment-${outputPostfix}`)
+    const refactoredCodeElement = document.getElementById("refactored-code")
     // Hide loading animation if visible
     loaderElement.style.display = "none"
     // Show loading animation
@@ -43,14 +40,15 @@ const sendText = event => {
     }
     controller = new AbortController()
 
-    requestAssessment(inputTextElement.value)
-    .then(stream => {
-        const teed = stream.tee()
-        readAssessment(teed[0])
-        return combineAssessment(teed[1])
+    Promise.all([
+        requestReview("logic", logicModel, inputText, logicAsessmentOutputElement, controller),
+        requestReview("quality", qualityModel, inputText, qualityAssessmentOutputElement, controller),
+        requestReview("performance", performanceModel, inputText, performanceAssessmentOutputElement, controller),
+        requestReview("security", securityModel, inputText, securityAssessmentOutputElement, controller),
+    ]).then(assessments => {
+        loaderElement.style.display = "block"
+        requestRefactor(refactorModel, inputText, assessments, refactoredCodeElement, controller)
     })
-    .then(assessments => requestRefactor(inputTextElement.value, assessments))
-    .then(readRefactor)
     .catch(handleError)
 }
 
@@ -67,31 +65,57 @@ const stopStreaming = () => {
     }
 }
 
-const requestAssessment = async codeSnippet => {
-    return fetch("/stream/code/review/stage/0", {
+const requestReview = async (aspect, model, codeSnippet, outputElement, controller) => {
+    return fetch(`/assistant/code/review/${aspect}`, {
         method: "POST",
         signal: controller.signal, // Pass the signal to abort the fetch
         headers: {
             "Accept": "application/x-ndjson",
-            "Content-Type": "text/plain"
+            "Content-Type": "text/plain",
+            "X-Chat-Model": model
+        },
+        body: codeSnippet
+    })
+    .then(readNdJsonStream)
+    .then(stream => {
+        loaderElement.style.display = "none"
+        const teed = stream.tee()
+        streamContent(teed[0], outputElement, value => value.response)
+        return collectAgentResponse(teed[1])
+    })
+}
+
+const sendReviewRequest = async (aspect, model, codeSnippet, controller) => {
+    return fetch(`/assistant/code/review/${aspect}`, {
+        method: "POST",
+        signal: controller.signal, // Pass the signal to abort the fetch
+        headers: {
+            "Accept": "application/x-ndjson",
+            "Content-Type": "text/plain",
+            "X-Chat-Model": model
         },
         body: codeSnippet
     }).then(readNdJsonStream)
 }
 
-const requestRefactor = async (codeSnippet, assessments) => {
-    return fetch("/stream/code/review/stage/1", {
+const requestRefactor = async (model, codeSnippet, assessments, outputElement, controller) => {
+    return fetch("/assistant/code/refactor", {
         method: "POST",
         signal: controller.signal,
         headers: {
             "Accept": "application/x-ndjson",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "X-Chat-Model": model
         },
         body: JSON.stringify({
             codeSnippet,
             assessments
         })
     }).then(readNdJsonStream)
+    .then(stream => {
+        loaderElement.style.display = "none"
+        streamContent(stream, outputElement, value => value.refactoredCode)
+    })
 }
 
 const readNdJsonStream = response => {
@@ -120,86 +144,47 @@ const readNdJsonStream = response => {
     })
 }
 
-const readAssessment = stream => {
+const streamContent = (stream, outputElement, callBackFn = value => value, intervalTime = 5) => {
     const reader = stream.getReader()
-    loaderElement.style.display = "none"
-    const display = ({ done, value }) => {
+    const appendToOutputElement = ({ done, value }) => {
         if (done) {
-            for (let index = 0; index < assessmentOutputElement.length; index++) {
-                assessmentOutputElement[index].innerHTML = marked.parse(assessmentOutputElement[index].innerHTML)
-            }
+            outputElement.innerHTML = DOMPurify.sanitize(
+                marked.parse(outputElement.innerHTML)
+            ).replaceAll("&amp;", "&")
             return
         }
-        const responseText = value.response;
+        const responseText = callBackFn(value)
         let index = 0;
-        // Function to append one character at a time
-        let outputElement
         const appendCharacter = () => {
-            if (index < responseText.length && (outputElement = getAssesmentOutputElement(value.agentType))) {
+            if (index < responseText.length) {
                 outputElement.innerHTML += responseText[index]
                 index++
                 // Call the function again to append next character
                 assessmentTimeout = setTimeout(appendCharacter, intervalTime) // Adjust the interval as needed
             } else {
                 // Continue reading the stream after finishing current response
-                reader.read().then(display);
+                reader.read().then(appendToOutputElement);
             }
         };
         appendCharacter()
     }
-    reader.read().then(display)
+    reader.read().then(appendToOutputElement)
 }
 
-const getAssesmentOutputElement = agentType => {
-    switch (agentType) {
-        case "LOGIC_ASSESSMENT": return logicAsessmentOutputElement
-        case "QUALITY_ASSESSMENT": return qualityAssessmentOutputElement
-        case "SECURITY_ASSESSMENT": return securityAssessmentOutputElement
-        case "PERFORMANCE_ASSESSMENT": return performanceAssessmentOutputElement
-    }
-}
-
-const combineAssessment = async stream => {
+const collectAgentResponse = async stream => {
     const reader = stream.getReader()
-    const combinedAssessment = {}
-    const combine = ({ done, value }) => {
+    let agentResponse
+    const collect = ({ done, value }) => {
         if (done) {
-            return Object.values(combinedAssessment)
+            return agentResponse
         }
-        const agentType = value.agentType
-        if (!combinedAssessment[agentType]) {
-            combinedAssessment[agentType] = { response: "", agentType }
+        if (!agentResponse) {
+            agentResponse = value
         }
-        combinedAssessment[agentType].response += value.response
-        return reader.read().then(combine)
+        agentResponse.response += value.response
+        return reader.read().then(collect)
     }
-    return reader.read().then(combine)
-}
-
-const readRefactor = stream => {
-    const reader = stream.getReader()
-    const display = ({ done, value }) => {
-        if (done) {
-            refactoredCodeElement.innerHTML = DOMPurify.sanitize(marked.parse(refactoredCodeElement.innerHTML))
-                .replaceAll("&amp;", "&")
-            return
-        }
-        const refactoredCode = value.refactoredCode
-        let index = 0
-        const appendCharacter = () => {
-            if (index < refactoredCode.length) {
-                refactoredCodeElement.innerHTML += refactoredCode[index]
-                index++
-                // Call the function again to append next character
-                refactoredCodeTimeout = setTimeout(appendCharacter, intervalTime) // Adjust the interval as needed
-            } else {
-                // Continue reading the stream after finishing current response
-                reader.read().then(display)
-            }
-        }
-        appendCharacter()
-    }
-    reader.read().then(display)
+    return reader.read().then(collect)
 }
 
 const handleError = (error) => {
